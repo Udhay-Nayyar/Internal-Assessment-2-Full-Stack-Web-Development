@@ -12,7 +12,8 @@ Requirements: Node.js and a running MongoDB instance.
    npm install
    ```
 
-2. Copy `.env.example` to `.env` beside `package.json` and set your local values:
+2. Copy `.env.example` to `.env` beside `package.json`, or to
+   `backend/.env`, and set your local values:
 
    ```env
    MONGO_URI=mongodb://127.0.0.1:27017/library_management
@@ -23,7 +24,9 @@ Requirements: Node.js and a running MongoDB instance.
    FRONTEND_ORIGINS=http://localhost:5173
    ```
 
-   Keep these credentials and the JWT secret private. Do not commit `.env`.
+   The server loads the root `.env` first and uses `backend/.env` for any
+   values not already set. Keep these credentials and the JWT secret private.
+   Do not commit `.env`.
 
 3. Start the API:
 
