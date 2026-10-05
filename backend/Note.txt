@@ -1,0 +1,5 @@
+Use one atomic database update that decrements availableCopies only when it is greater than zero.
+MongoDB allows only one simultaneous request to match and update the final copy.
+The other request finds no available book and gets an “out of copies” response.
+This avoids a separate check-then-update sequence, which could allow both librarians to issue it.
+The borrow record is created only after the copy is successfully reserved.
