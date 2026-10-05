@@ -1,6 +1,6 @@
 import type { ApiErrorBody } from '../types';
 
-const BASE_URL = '/api';
+const BASE_URL = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
 const TOKEN_KEY = 'shelflife_token';
 
 export const tokenStorage = {

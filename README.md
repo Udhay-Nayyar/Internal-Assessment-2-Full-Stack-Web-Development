@@ -12,7 +12,7 @@ Requirements: Node.js and a running MongoDB instance.
    npm install
    ```
 
-2. Create a `backend/.env` file with your local settings:
+2. Copy `.env.example` to `.env` beside `package.json` and set your local values:
 
    ```env
    MONGO_URI=mongodb://127.0.0.1:27017/library_management
@@ -20,6 +20,7 @@ Requirements: Node.js and a running MongoDB instance.
    LIBRARIAN_USERNAME=librarian
    LIBRARIAN_PASSWORD=replace-with-a-strong-password
    JWT_SECRET=replace-with-a-long-random-secret
+   FRONTEND_ORIGINS=http://localhost:5173
    ```
 
    Keep these credentials and the JWT secret private. Do not commit `.env`.
@@ -31,6 +32,8 @@ Requirements: Node.js and a running MongoDB instance.
    ```
 
    The API listens at `http://localhost:3000` by default. Set `PORT` to use another port.
+
+4. For local frontend development, the Vite proxy forwards `/api` to `http://localhost:3000`. If your backend uses another port, set `VITE_DEV_API_TARGET` in `frontend/.env`.
 
 ## Authentication
 
@@ -129,6 +132,18 @@ curl http://localhost:3000/api/members/MEMBER_ID/history
 ```
 
 The response contains the member and a `history` array with each borrow record and its populated book.
+
+## Deployment configuration
+
+Deploy the backend and frontend as separate services or behind one domain with `/api` routed to the backend:
+
+- Set the backend service's `MONGO_URI`, `PORT`, `LIBRARIAN_USERNAME`, `LIBRARIAN_PASSWORD`, `JWT_SECRET`, and `FRONTEND_ORIGINS` as platform environment variables. Use a hosted MongoDB connection string and a long, unique JWT secret. `FRONTEND_ORIGINS` is the exact frontend origin (scheme and hostname), or a comma-separated list of allowed origins.
+- The backend listens on `0.0.0.0` so the hosting platform can reach it. Do not expose MongoDB publicly beyond what your hosting provider requires.
+- For a frontend and backend on separate domains, set `VITE_API_URL` to the backend URL ending in `/api` when building the frontend (for example, `https://api.example.com/api`). This value is embedded in the frontend build, so configure it before running `npm run build` from `frontend`.
+- If both are served from the same origin, leave `VITE_API_URL` unset; the frontend uses `/api` and the web host must route that path to the backend.
+- For local development, `VITE_DEV_API_TARGET` changes the Vite proxy's backend target; it defaults to `http://localhost:3000`.
+
+Use the values in `.env.example` and `frontend/.env.example` as templates only. Never deploy with the example credentials or commit real `.env` files.
 
 ## Errors
 
